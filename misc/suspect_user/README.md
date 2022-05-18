@@ -1,4 +1,4 @@
-## MISC / Pierre Papier Hallebarde
+## MISC / Un utilisateur suspicieux
 
 <p align="center">
   <img src="img/consignes.png" />
@@ -22,7 +22,7 @@ Commandes disponibles :
 
 ### Exploit
 
-Je vais passer tous les tests pour cerner le SGBD en question, mais `_` et `%` retourne des résultats, nous devons dons être dans une requête du genre :
+Je vais passer tous les tests pour cerner le SGBD en question, mais `_` et `%` retourne des résultats, nous devons donc être dans une requête du genre :
 
 `SELECT * FROM table WHERE xxx LIKE %user_input%`
 

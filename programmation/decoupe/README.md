@@ -1,4 +1,4 @@
-## MISC / Pierre Papier Hallebarde
+## PROGRAMMATION / Découpé
 
 <p align="center">
   <img src="img/consignes.png" />
