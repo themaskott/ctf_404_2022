@@ -53,7 +53,7 @@ $ checksec cache_cache
 ```
 Le canary et NX nous informe que ça va être compliqué de jouer avec la stack ... ceci dit, la format string doit nous permettre de lire ou écrire à peut près comme on veut. Reste à savoir quoi / où.
 
-Un petit tour dans le code du binaire (je passe divers allocation et je commente dans le code):
+Un petit tour dans le code du binaire (je passe diverses allocations et je commente dans le code):
 
 ```c
 int main(void)
@@ -132,7 +132,7 @@ https://www.bases-hacking.org/format-strings.html
 
 ### Exploit
 
-Il faut tatonner un peu avec le serveur puis dans gdb pour voir la constitution de la stack et ce que nous allons pouvoir faire avec notre format string ...
+Il faut tâtonner un peu avec le serveur puis dans gdb pour voir la constitution de la stack et ce que nous allons pouvoir faire avec notre format string ...
 
 ```bash
 Veuillez décliner votre identité:
@@ -161,17 +161,17 @@ C'est plus moche ... mais pour le coup on retrouve bien nos 'AAAAAAAA' sur la st
 - le pose dans la stack
 - puis doit l'afficher `printf(user_name)`
 
-A ce moment, comme nous avons inséré des caractères de chaîne formatée dans le login (pour le moment %x), il va chercher sur la stack autant d'arguments que formateurs dans la chaîne.
+A ce moment, comme nous avons inséré des caractères de chaîne formatée dans le login (pour le moment %x), il va chercher autant d'arguments que formateurs dans la chaîne.
 
 
-Comme nous sommes réduit par la taille de la saisie, on va utiliser les modifieurs comme `i$` qui indique que `%x` correspond au `ie` argument, donc pour nous au `ie` offset sur la stack au moment de l'appel à `printf`.
+Comme nous sommes réduit par la taille de la saisie, on va utiliser les modifieurs comme `i$` qui indique que `%x` correspond au `ie` argument.
 
 Pour lire toutes les valeurs sous forme d'une adresse hexa, on va utiliser `%p` dans notre format string.
 
-Y'a plus qu'à regarder la stack dans gdb pour voir les offset entre notre sasie et le mot de passe.
+Y'a plus qu'à regarder la stack dans gdb pour voir les offset entre notre saisie et le mot de passe.
 
 
-Juste après la saise du login :
+Juste après la saisie du login :
 
 
 ```bash
