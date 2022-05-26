@@ -26,13 +26,6 @@ def conn():
 
     return r
 
-def attach_gdb():
-    if args.GDB:
-        gdb.attach(r, gdbscript="""
-source ~/.gdbinit
-b*main
-        """)
-
 
 def main():
     global r
