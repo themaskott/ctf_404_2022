@@ -54,13 +54,13 @@ $ ls -la
 
 Les deux images disques font exactement la même taille, par ailleurs les entêtes ne font pas penser à un MBR de disques.
 
-On peut donc faire l'hypothèse que nous avons les fragments d'un fichier réparti sur plusieurs disque (RAID5), et dans le cas présent 2 disques sur les 3 qui seraient montés en RAID 5.
+On peut donc faire l'hypothèse que nous avons les fragments d'un fichier réparti sur plusieurs disques (RAID5), et dans le cas présent 2 disques sur les 3 qui seraient montés en RAID 5.
 
 Par ailleurs, la configuration précise que les blocs font 1Mb, ce qui va faciliter la reconstitution.
 
 ### SOLUTION
 
-Avec les hypothèses précédentes, on a donc pour notre fichier, disons que l'on a perdu le disk2 :
+Avec les hypothèses précédentes, on a donc pour notre fichier (disons que l'on a perdu le disk2) :
 
 <p align="center">
   <img src="img/RAID_5.png" />
