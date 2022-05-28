@@ -16,7 +16,7 @@ Taille des blocs : 1 octet
 https://fr.wikipedia.org/wiki/RAID_(informatique)#RAID_5_:_volume_agr%C3%A9g%C3%A9_par_bandes_%C3%A0_parit%C3%A9_r%C3%A9partie
 ```
 
-D'après le fichier `manuel.txt` les données extraites proviennent d'un système monté en RAID 5, et le lien vers wikipedia nous fournit toutes les informations nécessairese.
+D'après le fichier `manuel.txt` les données extraites proviennent d'un système monté en RAID 5, et le lien vers wikipedia nous fournit toutes les informations nécessaires.
 
 On peut rapidement regarder à quoi ressemblent les données :
 
@@ -48,8 +48,8 @@ xxd disk0.img | head
 $ ls -la
 -rw-r--r-- 1 maskott maskott 27756 18 mai   19:58 disk0.img
 -rw-r--r-- 1 maskott maskott 27756 18 mai   19:58 disk1.img
+```
 
-`̀``
 
 
 Les deux images disques font exactement la même taille, par ailleurs les entêtes ne font pas penser à un MBR de disques.
