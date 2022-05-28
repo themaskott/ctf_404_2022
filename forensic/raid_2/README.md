@@ -64,7 +64,7 @@ Il suffit alors de prendre notre fichier corrompu :
 
 Et modifier le fichier au fur et à mesure dans un éditeur hexadécimal par exemple.
 
-Sans oublier le chunck de fin (`IEND`) qui est lui aussi décalré avec une taille de data nulle et suivit d'un CRC.
+Sans oublier le chunck de fin (`IEND`) qui est lui aussi déclaré avec une taille de data nulle et suivit d'un CRC.
 
 
 Après cela, notre fichier s'ouvre correctement et affiche le flag :
