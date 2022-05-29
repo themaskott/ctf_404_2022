@@ -20,7 +20,7 @@ Voici quelques Write Up :
   - [A l'aube d'un échange](osint/aube)
   - [Collaborateur suspect](osint/collab_suspect)
   - [Nous sommes infiltrés](osint/infiltres)
-  - [Nom d'une nouvelle recrue](osint/nom_nvell_recrue)
+  - [Nom d'une nouvelle recrue](osint/nom_nvelle_recrue)
 - #### Programmation
   - [Découpé](programmation/decoupe)
 - #### PWN
