@@ -31,7 +31,7 @@ Au fur et à mesure des commentaires nous apprenons plusieurs choses :
 
 Le post le plus intéressant se révèle être celui du voyage en mars :
 
-``̀
+```
 Terminal 2E - Portes K
 
 Charles de Gaulle est un aéroport toujours trop animé à mon goût, je préférais le Covid ! Il est vraiment difficile de s'y retrouver lorsque plus d'un terminal est ouvert. Hâte de découvrir enfin l'organisation de ma future épouse !  Le vol a eu du retard, mais nous avons pu patienter avec un verre au bar. Pas de pluie, un bon début de mois de mars ! En route vers le soleil et une rencontre qui s'annonce pleine d'énergie !
