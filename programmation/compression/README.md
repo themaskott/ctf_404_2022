@@ -7,13 +7,13 @@
 
 ### Look around
 
-Nous avons à notre disposition un ficher gros fichier `tar` qui a priori selon son nommage a été archivé/compressé 2500 fois.
+Nous avons à notre disposition un gros fichier `tar` qui a priori selon son nommage a été archivé/compressé 2500 fois.
 
-On peut l'ouvrir à la main quelque fois pour voir l'imbrication.
+On peut l'ouvrir à la main quelques fois pour voir l'imbrication.
 
 ### Solve
 
-Un petit code `bash` fera l'affaire :
+Un petit code `bash` fera l'affaire, le trick étant d'utiliser les bonnes options de décompression quand nécessaire :
 
 ```bash
 #!/bin/bash
@@ -32,16 +32,19 @@ do
         tar xvf $name.tar
         rm $name.*
     fi
+
     if [ -f $name.tar.xz ]
     then
         tar -Jxvf $name.tar.xz
         rm $name.*
     fi
+
     if [ -f $name.tar.bz2 ]
     then
         tar -jxvf $name.tar.bz2
         rm $name.*
     fi
+
 done
 ```
 
