@@ -16,6 +16,7 @@ Voici quelques Write Up :
   - [Utilisateur suspect 1/2](misc/suspect_user_1)
   - [Utilisateur suspect 2/2](misc/suspect_user_2)
   - [Je suis une théière](misc/teapot)
+  - [GoGOLFPlex](misc/gogolfplex)
 - #### OSINT
   - [A l'aube d'un échange](osint/aube)
   - [Collaborateur suspect](osint/collab_suspect)
