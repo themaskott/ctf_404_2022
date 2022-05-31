@@ -13,13 +13,13 @@ Le code du challenge nous est fournit : [chall.py](chall.py)
 
 Un autre challenge pour regarder d'un peu plus près les internals de python .... mais qui peut faire vite perdre pas mal de temps si l'on ne va pas voir la documentation officielle (RTFM !)
 
-Tout d'abord, le titre : `gogolplex` nous amène sur un nombre particulier : [gogolplex](https://fr.wiktionary.org/wiki/gogolplex) qui a part plein de zéro n'a pas de rapport avec le challenge
+Tout d'abord, le titre : `gogolplex` nous amène sur un nombre particulier : [gogolplex](https://fr.wiktionary.org/wiki/gogolplex) qui a part plein de zéros n'a pas de rapport avec le challenge
 
 
 ### Python internals
 
 
-Tout d'abord le code utilise une `f-string` donc on peut supposé que l'interpréteur est d'une version >= 3.6
+Tout d'abord le code utilise une `f-string` donc on peut supposer que l'interpréteur est d'une version >= 3.6
 
 Aussi, notre `input()` ne pourra pas être exploité :  [input()](https://docs.python.org/3/library/functions.html#input)
 
@@ -53,7 +53,7 @@ Notre input va être étendu sur 51 caractères, paddé à droite par des `0`, m
 On peut saisir directement `1` suivi de 50 `0`, mais en remplaçant un zéro sur deux par un underscore qui sera ignoré par `int()`, pour obtenir `10**25<=10**25`
 
 ```bash
-nc challenge.404ctf.fr 32697                                                       ✔  21:21:22 
+$ nc challenge.404ctf.fr 32697
 Bienvenue sur le goGOLFplex, le plus grand parcours de golf de l'univers!
 Il comporte 10^16 trous mais le meilleur score que quelqu'un ait fait dans l'histoire est 10^25
 Si tu arrives à battre ou égaliser ce score tu rentreras dans l'histoire !
