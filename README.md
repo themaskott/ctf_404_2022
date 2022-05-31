@@ -32,3 +32,5 @@ Voici quelques Write Up :
 - #### Reverse
   - [Renverse la tour 1/2](reverse/tour_1)
   - [Renverse la tour 2/2](reverse/tour_2)
+- #### Cryptanalyse
+  - [Weak Signature](crypto/weak_sign)
