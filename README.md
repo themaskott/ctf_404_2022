@@ -24,6 +24,7 @@ Voici quelques Write Up :
   - [Nom d'une nouvelle recrue](osint/nom_nvelle_recrue)
 - #### Programmation
   - [Découpé](programmation/decoupe)
+  - [Compression](programmation/compression)
 - #### PWN
   - [Cache cache](pwn/cache_cache)
   - [Patchwork](pwn/patchwork)
