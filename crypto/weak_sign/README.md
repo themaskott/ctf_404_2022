@@ -80,6 +80,35 @@ $ xxd script.py.zsig
 ```
 Mais comme la signature est calculée sur uniquement `somme(code) * taille(code)`, si on remplace dans ce fichier le code déjà présent par un code de même longeur et dont la somme vaut la même chose .... on aura un deuxième script valide !
 
+En tatonnant un peu pour trouver le bon padding :
+
+```python
+target_size = 0x7a
+target_sum = 0x2791
+target_check = target_size * target_sum
+
+payload = b"print(open('flag.txt').read()) #"
+payload += b"S" * (target_size-len(payload) - 2)
+payload += b"Z"
+payload += b"Z"
+
+print(hex(len(payload)))
+
+sum = 0
+for c in payload:
+    sum +=c
+
+print(hex(sum))
+
+
+with open("script.py.zsig","rb") as fi, open("script2.py.zsig","wb") as fo:
+    for i in range(0x138):
+        fo.write(fi.read(1))
+    fo.write(payload)
+```
+
+
+
 ```bash
 $ xxd script2.py.zsig   
 00000000: 015a 5369 6702 0000 0000 0000 0000 0000  .ZSig...........
@@ -121,3 +150,5 @@ Send me a signed archive encoded in base 64:
 
 404CTF{Th1s_Ch3cksum_W4s_Tr4sh}
 ```
+
+### L'implémentation d'algorithmes cryptographiques "maison" est une très mauvaise idée !!
