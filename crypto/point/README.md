@@ -36,7 +36,7 @@ f.write(f'cipher: hex(encrypted_flag)')
 
 Ne fait qu'écrire la chaine de caractère `cipher: hex(encrypted_flag)` dans le fichier, il manque les balises de format string.
 
-Ceci dit, même en envisageant des tas de modifications qui ont pu être apportée, je n'ai pas trouvé de problème triviaux (flag signé et non chiffré, clef privée inscrite dans le fichier, etc).
+Ceci dit, même en envisageant des tas de modifications qui ont pu être apportées, je n'ai pas trouvé de problème triviaux (flag signé et non chiffré, clef privée inscrite dans le fichier, etc).
 
 
 ### Just a GCD ...
@@ -61,7 +61,7 @@ Un peu de ressources :
 - [FINDING CASES OF CIPHERTEXT EQUAL TO PLAINTEXT IN THE RSA ALGORITHM](https://shareok.org/bitstream/handle/11244/10269/Sadr_okstate_0664M_11533.pdf)
 - https://crypto.stackexchange.com/questions/99059/plaintext-message-equals-the-encrypted-message
 
-Pour éviter les confusion, on va appeler ce point `p` un `hole`
+Pour éviter les confusions, on va appeler ce point `p` un `hole`
 
  `hole = hole^e [N]` signifie  (parce qu'il est non nul et différent de 1) qu'il est solution de :
 
