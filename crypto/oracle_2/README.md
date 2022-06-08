@@ -1,4 +1,4 @@
-## CRYPTANALYSE / Un simple oracle 1/2
+## CRYPTANALYSE / Un point c'est tout
 
 <p align="center">
   <img src="img/consignes.png" />
