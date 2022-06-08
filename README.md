@@ -35,3 +35,4 @@ Voici quelques Write Up :
   - [Renverse la tour 2/2](reverse/tour_2)
 - #### Cryptanalyse
   - [Weak Signature](crypto/weak_sign)
+  - [La Fonte des hashs](crypto/fonte_hash)
