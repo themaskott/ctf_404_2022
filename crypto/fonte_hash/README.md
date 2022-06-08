@@ -12,7 +12,7 @@ Le challenge nous fournit un fichier :
 - [hash.py](hash.py) : code utilisé pour hasher des chaînes de caractère
 - un hash (le flag sûrement) hashé par cet algorithme : `18f2048f7d4de5caabd2d0a3d23f4015af8033d46736a2e2d747b777a4d4d205`
 
-Le fichier fournit est relativement obfusqué, mais un peu de recherche sur `eval()`  et `codecs.decode()` permet de rapidement reconstituer un code lisible, en gros :
+Le fichier fourni est relativement obfusqué, mais un peu de recherche sur `eval()`  et `codecs.decode()` permet de rapidement reconstituer un code lisible, en gros :
 
 `base64.b64decode( magic + ROT13(love) + god + ROT13(destiny) )`
 
@@ -44,7 +44,7 @@ python3 hash_readable.py "404CTF{"
 18f2048f7d4de545ebda7c636363636363636363636363636363636363636363
 ```
 
-Là on retrouve carrément le début du hash fournit en indice.
+Là on retrouve carrément le début du hash du flag.
 
 ### Breaking the hash
 
