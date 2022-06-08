@@ -1,4 +1,4 @@
-## CRYPTANALYSE / Weak Signature
+## CRYPTANALYSE / La fonte des hashs
 
 <p align="center">
   <img src="img/consignes.png" />
