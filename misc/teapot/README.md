@@ -42,4 +42,8 @@ En partant du centre, on cherche la case dont la valeur est à la bonne distance
 
 Il suffit alors de remonter petit à petit de saut en saut, puis de tout refaire dans le bon sens pour récupérer des morceaux de base 64.
 
+`NDE4X0FfbTR6ZV9pbmdfVGU0UDB0`
+
 Le tout décodé donnant le flag.
+
+`418_A_m4ze_ing_Te4P0t`
