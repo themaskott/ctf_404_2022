@@ -57,11 +57,17 @@ Par ailleurs des filtres sont en place sur les `SYSCALL` autorisés pour le bina
 
 Ici nous pourrons : lire, écrire, quitter ou utiliser des `SYSCALL` supérieurs à 0x14c (332)
 
+Plus d'info sur les seccomp filters : https://man7.org/linux/man-pages/man2/seccomp.2.html
+
 https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
 
 Toutefois, il n'y a pas de check sur l'architecture.
 
 ### Analyse du code
+
+On trouve trois fonction principales dans le code.
+
+##### main()
 
 ```c
 undefined8 FUN_main(void)
@@ -87,26 +93,12 @@ undefined8 FUN_main(void)
   msg_1._88_4_ = 0x746e6169;
   msg_1._92_2_ = 0xa2e;
   user_name._0_8_ = 0;
-  user_name._8_8_ = 0;
-  user_name._16_8_ = 0;
-  user_name._24_8_ = 0;
-  user_name._32_8_ = 0;
-  user_name._40_8_ = 0;
-  user_name._48_8_ = 0;
-  user_name._56_8_ = 0;
-  user_name._64_8_ = 0;
-  user_name._72_8_ = 0;
-  user_name._80_8_ = 0;
-  user_name._88_8_ = 0;
-  user_name._96_8_ = 0;
-  user_name._104_8_ = 0;
-  user_name._112_8_ = 0;
+  ...
   user_name._120_8_ = 0;
   write(1,msg_1,0x5e);
   read(0,user_name,0x80);
   user_pass._0_8_ = 0;
-  user_pass._8_8_ = 0;
-  user_pass._16_8_ = 0;
+  ...
   user_pass._24_8_ = 0;
   msg_2._0_8_ = 0x6c6c69756556202d;
   msg_2._8_8_ = 0x6f73a9c364207a65;
@@ -122,6 +114,13 @@ undefined8 FUN_main(void)
 }
 ```
 
+En nettoyant un peu, on voit vite que le `main()` ne fait pas grand chose, la fonction permet l'interaction avec l'utilisateur. Malheureusement, les saisie sont lues avec `read()` et des paramètres de taille corrects, correspondants aux variables déclarées pour recevoir ces valeurs. Donc pour le moment, pas de buffer overflow possible par ici.
+
+##### seccomp()
+
+La première fonction appelée par `main()` permet de définir les restrictions sur les `SYSCALL`.
+
+Pour le moment, rien de plus que les restrictions identifiées précédemment. De plus, le programme ne crée pas de fils (`fork()`), donc il ne sera pas possible de bypasser ces protections via un fils : https://ctftime.org/writeup/23144
 
 ```c
 void FUN_seccomp(void)
@@ -149,6 +148,9 @@ void FUN_seccomp(void)
 }
 ```
 
+##### check_pass()
+
+Enfin, voici la fonction appelée à la fin de `main()` qui va manipuler le `password` saisi par l'utilisateur.
 
 
 
