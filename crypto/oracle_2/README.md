@@ -23,7 +23,7 @@ Ceci étant dit, passons à ce que vous vouliez me dire!
 ```
 
 
-On se retrouve dans un situation similaire au challenge n°1, mais cette fois sans divulgation du modulus N de la part de l'oracle ...
+On se retrouve dans une situation similaire au challenge n°1, mais cette fois sans divulgation du modulus N de la part de l'oracle ...
 
 
 
