@@ -36,5 +36,6 @@ Voici quelques Write Up :
 - #### Cryptanalyse
   - [Weak Signature](crypto/weak_sign)
   - [Un simple oracle 1/2](crypto/oracle_1)
+  - [Un simple oracle 2/2](crypto/oracle_2)]
   - [La Fonte des hashs](crypto/fonte_hash)
   - [Un point c'est tout](crypto/point)
