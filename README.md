@@ -39,3 +39,11 @@ Voici quelques Write Up :
   - [Un simple oracle 2/2](crypto/oracle_2)
   - [La Fonte des hashs](crypto/fonte_hash)
   - [Un point c'est tout](crypto/point)
+
+
+### End game
+
+
+<p align="center">
+  <img src="img/score.png" />
+</p>
