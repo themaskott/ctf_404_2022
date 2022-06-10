@@ -450,6 +450,8 @@ Là, il faut faire un peu de recherche (je n'ai plus tous mes liens sous la main
 Ainsi pour `open()`, le numéro du syscall n'est plus `2` mais `0x40000002`.
 Je n'ai plus le détails, mais cela set un flag (CF) du compilateur, qui passe en 32 bits, avec une restrictions du coup sur les arguments de la fonctions appelée (adresses sur 32bits).
 
+https://blog.slowerzs.net/posts/linux-kernel-syscalls/
+
 En première approche, on pourrait essayer de faire tout cela avec 4 payload successifs (comme celui pour leaker la libc). Mais je n'ai pas réussi ayant trop peu d'instructions à chaque fois (par exemple on a besoin de mémoriser le retour de `open` pour le passer à `read`, même si on peut s'en passer en supposant que ça va être le file descriptor n°3 ).
 
 Finalement je vais préparer une ROPchain qui fait le open / read / write, sans limite de taille, puis :
@@ -473,4 +475,17 @@ A force de tâtonner, en lisant `proc/self/mount` on découvre le nom du fichier
 
 Après échanges avec le concépteur du challenge, ce bypass est possible à cause de l'implémentation en docker du chall et du "montage" du fichier, qui laisse une trace dans /proc/self/mount.
 
-La méthode attendue (et plus logique mais je n'y ai pas pensé, voir plus bas), consiste à passer par un appel syscall à `getdents` pour lire obtenir une structure contenant des informations sur le répertoire choisi (dont le nom des fichiers).
+La méthode attendue (et plus logique mais je n'y ai pas pensé, voir plus bas), consiste à passer par un appel syscall à `getdents` pour obtenir une structure contenant des informations sur le répertoire choisi (dont le nom des fichiers).
+
+
+### Some failures
+
+Quelques tests simples pour valider le `0x40000000 | syscall_number` comme utiliser ce syscall pour faire un `read()`, m'ont amené à penser que ça serait possible de faire plus simplement un `execve("/bin/bash")`
+
+Cependant, cela ne passait pas en local : `execve("/bin/sh", NULL, NULL)           = -1 ENOSYS (Function not implemented)` dans les traces.
+
+Et apparemment, pas plus en remote.
+
+En revanche, en local toujours j'obtenais aussi :`open("flag.txt", O_RDONLY)              = -1 ENOSYS (Function not implemented)`
+
+Je ne sais toujours pas pourquoi, mais du coup après confirmation par le concépteur que cela fonctionne en remote, j'ai du finir le chall à l'aveugle.
