@@ -30,6 +30,7 @@ Voici quelques Write Up :
   - [Patchwork](pwn/patchwork)
   - [Sans protection](pwn/sans_protection)
   - [Trop Facile](pwn/trop_facile)
+  - [Coffre fort](pwn/coffre_fort)
 - #### Reverse
   - [Renverse la tour 1/2](reverse/tour_1)
   - [Renverse la tour 2/2](reverse/tour_2)
