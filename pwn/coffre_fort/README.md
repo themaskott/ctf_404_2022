@@ -236,41 +236,7 @@ int main(){
         tab_2[i] = (unsigned char)b | 1;
 
     }
-
-    printf("tab_1 :\n") ;
-    for (int i = 0 ; i < 128 ; i++ ){
-        printf("%02x",tab_1[i]) ;
-        if((i+1)%8==0)
-            printf(" ");
-        if((i+1)%16==0)
-            printf("\n");
-    }
-
-    printf("\n");
-    printf("tab_2 :\n");
-    for (int i = 0 ; i < 128 ; i++){
-        printf("%02x",tab_2[i]) ;
-        if ((i+1)%8==0)
-            printf(" ");
-        if((i+1)%16==0)
-            printf("\n");
-    }
-
-    printf("tab_1, tab_2, tab_1 xor tab_2\n");
-
-    for(int i = 0 ; i < 128 ; i++)
-        printf("%02x", tab_1[i]);
-    printf("\n");
-
-    for(int i = 0 ; i < 128 ; i++)
-        printf("%02x", tab_2[i]);
-    printf("\n");
-
-    for(int i = 0 ; i < 128 ; i++)
-        printf("%02x", tab_1[i]^tab_2[i]);
-    printf("\n");
-
-
+    ...
     return 0 ;
 }
 ```
@@ -304,7 +270,7 @@ c773ffedcdabfb47c3f9e98d5b639f9b33b7595b5d17e9d5b3c7b51183413d87e9a1e1670197dd97
 a01aaea7e41109a4bfadf26a2d4dac5255ba68f87812b18b180a2e458d351c5b999fa09b3fe937fcb6775dc09d69f58619bd0091d23638e9acdf70e7319a5a42eaf648dfc11a0fd93cb767a1679f151a4a418ed47f5f0a94feb20f48d43b2188ea075cd15d087ea7abd93408e33931692b0ab1f6cfc63e8fa31c137b7c5c7ee7
 ```
 
-On peut vérifier en regargant la stack dans la fonction `check_pass` après génération des `rand()` :
+On peut vérifier en regardant la stack dans la fonction `check_pass` après génération des `rand()`, on retrouve bien les mêmes valeurs, qui sont donc prédictibles (tant que l'on appelle `rand()` le même nombre de fois et dans "le même ordre").
 
 ```bash
 gdb-peda$ x/50gx $rsp
@@ -336,71 +302,74 @@ gdb-peda$ x/50gx $rsp
 ```
 
 
+#### Analyse de la stack
 
+Toujours depuis la fonction `check_pass()` :
 
+```bash
 
+0x7fffffffdd50: 0x00007ffff7fb1540  0x00007fffffffdee0  <= stackframe de check_pass()
 
+0x7fffffffdd60: 0xe3f2ba294a516967  0xc9332e76e71b547c  <= tab_1
+0x7fffffffdd70: 0x5e580525a3310d66  0xdc21740e549bcdab
+0x7fffffffdd80: 0x6bea7e3efc413e70  0xdbec3c323bec5c8f
+0x7fffffffdd90: 0x7c05d1fbaafbfe02  0xf1b10fa85c89be75
+0x7fffffffdda0: 0x6448cbca3ae9f705  0x795e5a14641c1e1f
+0x7fffffffddb0: 0xaf1bacaa0911643b  0x7dba22bb1548e333
+0x7fffffffddc0: 0x4eb51bf8f87f1a0b  0x6cfa4ebc3d793898
+0x7fffffffddd0: 0x5c3bb5be55aa21ac  0x4efd154fe4e2b336
 
+0x7fffffffdde0: 0x47fbabcdedff73c7  0x9b9f635b8de9f9c3  <= tab_2
+0x7fffffffddf0: 0xd5e9175d5b59b733  0x873d418311b5c7b3
+0x7fffffffde00: 0x97dd970167e1a1e9  0x5d1955affbb12b39
+0x7fffffffde10: 0x953de7293bfb431b  0xb3eb9599bbf961d9
+0x7fffffffde20: 0xbd47d10be5a101ef  0x634bc573c57ba923
+0x7fffffffde30: 0x3b11f3d5dd9f2571  0xf59b196f5d4751cd
+0x7fffffffde40: 0xe9cb13a529231de1  0x05cb775f354de133
+0x7fffffffde50: 0xd3057371a31b2b87  0xa98349339ff1af95
 
+0x7fffffffde60: 0x0000000000000000  0x0000000000000000  <= buff
+0x7fffffffde70: 0x0000000000000000  0x0000000000000000
 
+0x7fffffffde80: 0x0000000000000008  0x0000008000000000  <= j (compteur dans la boucle while, il aura son importance)
+0x7fffffffde90: 0x00007fffffffdfe0  0x00000000004015d1  <= saved RBP / saved RIP (pour retrouner dans le main)
 
+0x7fffffffdea0: 0x6c6c69756556202d  0x6f73a9c364207a65  <= stackframe de main()
+0x7fffffffdeb0: 0x6173207369616d72  0x746f762072697369
+0x7fffffffdec0: 0x6420746f6d206572  0x2e65737361702065
+0x7fffffffded0: 0x000003400000000a  0x0000034000000340
 
+0x7fffffffdee0: 0x4242424242424242  0x4242424242424242  <= user_pass
+0x7fffffffdef0: 0x4242424242424242  0x4242424242424242
 
+0x7fffffffdf00: 0x4141414141414141  0x4141414141414141  <= user_name
+0x7fffffffdf10: 0x4141414141414141  0x4141414141414141
+0x7fffffffdf20: 0x4141414141414141  0x4141414141414141
+0x7fffffffdf30: 0x4141414141414141  0x4141414141414141
+0x7fffffffdf40: 0x4141414141414141  0x4141414141414141
+0x7fffffffdf50: 0x4141414141414141  0x4141414141414141
+0x7fffffffdf60: 0x4141414141414141  0x4141414141414141
+0x7fffffffdf70: 0x4141414141414141  0x4141414141414141
 
-
-```c
-#include <stdlib.h>
-#include <stdio.h>
-
-
-int main(){
-
-    unsigned char tab_a[128] = {0} ;
-    unsigned char tab_b[128] = {0} ;
-
-    int a = 0 ;
-    int b = 0 ;
-
-
-    for (int i = 0 ; i < 128 ; i++){
-
-        a = rand() ;
-        tab_a[i] = (unsigned char)a;
-
-        b = rand() ;
-        tab_b[i] = (unsigned char)b | 1;
-
-    }
-
-    printf("tab_a :\n") ;
-    for (int i = 0 ; i < 128 ; i++ ){
-        printf("%02x",tab_a[i]) ;
-        if((i+1)%8==0)
-            printf(" ");
-        if((i+1)%16==0)
-            printf("\n");
-    }
-
-
-    printf("\n");
-    printf("tab_b :\n");
-
-    for (int i = 0 ; i < 128 ; i++){
-        printf("%02x",tab_b[i]) ;
-        if ((i+1)%8==0)
-            printf(" ");
-        if((i+1)%16==0)
-            printf("\n");
-    }
-
-    printf("\n");
-
-    return 0 ;
-}
-
-
+0x7fffffffdf80: 0x756e65766e656942  0x276c207275732065
+0x7fffffffdf90: 0x6361667265746e69  0x6e6f632065642065
+0x7fffffffdfa0: 0x61206e6f6978656e  0x657266666f432075
+0x7fffffffdfb0: 0x0a212074726f662d  0x6c69756556202d0a
+0x7fffffffdfc0: 0x73696173207a656c  0x6572746f76207269
+0x7fffffffdfd0: 0x6669746e65646920  0x00000a2e746e6169
+0x7fffffffdfe0: 0x00000000004015e0  0x00007ffff7e11d0a
+0x7fffffffdff0: 0x00007fffffffe0d8  0x00000001ffffe3e9
+0x7fffffffe000: 0x000000000040135e  0x00007ffff7e118e9
 ```
 
+On comprend maintenant que si notre mot de passe valide les conditions notées plus haut, la boucle va continuer et on va pouvoir écrire dans la stackframe de `check_pass()` jusqu'à la sauvegarde de RIP pour reprendre le contrôle du flot d'exécution, et les valeurs lues au-delà du 32e octet de `user_pass`, seront lues dans `user_name` qui est directement à la suite dans la stackframe de `main()`.
+
+
+Quelques contraintes jusque là :
+- `user_pass[0:32] = tab_1[0:32] xor tab_2[0:32]`
+- `user_name[0:..] = whatever[0:..] xor tab_2[32:..]`
+
+En effet, on passe les tests d'arrêt de la boucle, mais ce que l'on va overflow sur la stack c'est `buff[j] = user_pass[j] ^ rand_tab_2[j];` donc si on veut pouvoir insérer un payload, celui-ci devra être préalablement xoré avec tab_2 (pour que les xor s'annulent).
 
 
 
@@ -465,56 +434,3 @@ String_1
 0x7fffffffe000: 0x000000000040135e  0x00007ffff7e118e9
 
 -----
-
-0x7fffffffdd50: 0x00007ffff7fb1540  0x00007fffffffdee0
-
-0x7fffffffdd60: 0xe3f2ba294a516967  0xc9332e76e71b547c
-0x7fffffffdd70: 0x5e580525a3310d66  0xdc21740e549bcdab
-0x7fffffffdd80: 0x6bea7e3efc413e70  0xdbec3c323bec5c8f
-0x7fffffffdd90: 0x7c05d1fbaafbfe02  0xf1b10fa85c89be75
-0x7fffffffdda0: 0x6448cbca3ae9f705  0x795e5a14641c1e1f
-0x7fffffffddb0: 0xaf1bacaa0911643b  0x7dba22bb1548e333
-0x7fffffffddc0: 0x4eb51bf8f87f1a0b  0x6cfa4ebc3d793898
-0x7fffffffddd0: 0x5c3bb5be55aa21ac  0x4efd154fe4e2b336
-
-0x7fffffffdde0: 0x47fbabcdedff73c7  0x9b9f635b8de9f9c3
-0x7fffffffddf0: 0xd5e9175d5b59b733  0x873d418311b5c7b3
-0x7fffffffde00: 0x97dd970167e1a1e9  0x5d1955affbb12b39
-0x7fffffffde10: 0x953de7293bfb431b  0xb3eb9599bbf961d9
-0x7fffffffde20: 0xbd47d10be5a101ef  0x634bc573c57ba923
-0x7fffffffde30: 0x3b11f3d5dd9f2571  0xf59b196f5d4751cd
-0x7fffffffde40: 0xe9cb13a529231de1  0x05cb775f354de133
-0x7fffffffde50: 0xd3057371a31b2b87  0xa98349339ff1af95
-
-0x7fffffffde60: 0x0000000000000085  0x0000000000000000
-0x7fffffffde70: 0x0000000000000000  0x0000000000000000
-
-0x7fffffffde80: 0x0000000000000008  0x0000008000000000
-0x7fffffffde90: 0x00007fffffffdfe0  0x00000000004015d1
-
-0x7fffffffdea0: 0x6c6c69756556202d  0x6f73a9c364207a65
-0x7fffffffdeb0: 0x6173207369616d72  0x746f762072697369
-0x7fffffffdec0: 0x6420746f6d206572  0x2e65737361702065
-0x7fffffffded0: 0x000003400000000a  0x0000034000000340
-
-0x7fffffffdee0: 0x4242424242424242  0x4242424242424242
-0x7fffffffdef0: 0x4242424242424242  0x4242424242424242
-
-0x7fffffffdf00: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf10: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf20: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf30: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf40: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf50: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf60: 0x4141414141414141  0x4141414141414141
-0x7fffffffdf70: 0x4141414141414141  0x4141414141414141
-
-0x7fffffffdf80: 0x756e65766e656942  0x276c207275732065
-0x7fffffffdf90: 0x6361667265746e69  0x6e6f632065642065
-0x7fffffffdfa0: 0x61206e6f6978656e  0x657266666f432075
-0x7fffffffdfb0: 0x0a212074726f662d  0x6c69756556202d0a
-0x7fffffffdfc0: 0x73696173207a656c  0x6572746f76207269
-0x7fffffffdfd0: 0x6669746e65646920  0x00000a2e746e6169
-0x7fffffffdfe0: 0x00000000004015e0  0x00007ffff7e11d0a
-0x7fffffffdff0: 0x00007fffffffe0d8  0x00000001ffffe3e9
-0x7fffffffe000: 0x000000000040135e  0x00007ffff7e118e9
